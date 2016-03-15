@@ -27,7 +27,6 @@ import br.com.awServices.credentials.Credentials;
  * 
  */
 @RestController
-@RequestMapping("aws/ebs")
 public class EbsController {
 
   private Credentials creds = new Credentials();
@@ -43,7 +42,7 @@ public class EbsController {
    * 
    * @return HttpStatus + ebsResult
    */
-  @RequestMapping(method = RequestMethod.POST)
+  @RequestMapping(value = "aws/ebs/{idVolume}", method = RequestMethod.POST)
   public @ResponseBody ResponseEntity<String> createEbs() {
     try{
     CreateVolumeRequest volume = new CreateVolumeRequest();
@@ -69,7 +68,7 @@ public class EbsController {
    * @param idVolume
    * @return ResponseEntity
    */
-  @RequestMapping(value = "/{idVolume}", method = RequestMethod.DELETE)
+  @RequestMapping(value = "aws/ebs/{idVolume}", method = RequestMethod.DELETE)
   public @ResponseBody ResponseEntity<String> deleteEbs(@PathVariable String idVolume) {
 
     try {
@@ -95,7 +94,7 @@ public class EbsController {
    * @param idVolume
    * @return ResponseEntity
    */
-  @RequestMapping(value = "/{idVolume}/snapshot", method = RequestMethod.POST)
+  @RequestMapping(value = "aws/ebs/{idVolume}/snapshot", method = RequestMethod.POST)
   public @ResponseBody ResponseEntity<String> createSnapshot(@PathVariable String idVolume) {
 
     try {
@@ -123,7 +122,7 @@ public class EbsController {
    * @param idVolume
    * @return ResponseEntity
    */
-  @RequestMapping(value = "/snapshot/{idSnapshot}", method = RequestMethod.DELETE)
+  @RequestMapping(value = "aws/ebs/snapshot/{idSnapshot}", method = RequestMethod.DELETE)
   public @ResponseBody ResponseEntity<String> deleteSnapshot(@PathVariable String idSnapshot) {
 
     try {
@@ -150,7 +149,7 @@ public class EbsController {
    * @param idVolume
    * @return ResponseEntity
    */
-  @RequestMapping(value = "/snapshot/{idSnapshot}", method = RequestMethod.POST)
+  @RequestMapping(value = "aws/ebs/snapshot/{idSnapshot}", method = RequestMethod.POST)
   public @ResponseBody ResponseEntity<String> createVolumeFromSnapshot(@PathVariable String idSnapshot) {
 
     try {
@@ -168,6 +167,13 @@ public class EbsController {
       return new ResponseEntity<String>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
+  }
+  
+  @RequestMapping(value = "/status",method = RequestMethod.GET)
+  public @ResponseBody ResponseEntity<String> getStatus() {
+  
+    return new ResponseEntity<String>("Olá!!! Eu estou bem. :)", HttpStatus.OK);
+   
   }
 
 }
