@@ -1,4 +1,4 @@
-package br.com.awServices.aws.ec2.ebs.service;
+package br.com.awServices.aws.service.ec2.ebs;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.amazonaws.services.ec2.AmazonEC2;
 import com.amazonaws.services.ec2.AmazonEC2Client;
 import com.amazonaws.services.ec2.model.CreateSnapshotRequest;
 import com.amazonaws.services.ec2.model.CreateSnapshotResult;
@@ -18,7 +17,7 @@ import com.amazonaws.services.ec2.model.DeleteSnapshotRequest;
 import com.amazonaws.services.ec2.model.DeleteVolumeRequest;
 import com.amazonaws.services.ec2.model.VolumeType;
 
-import br.com.awServices.credentials.Credentials;
+import br.com.awServices.auth.credentials.Credentials;
 
 /**
  * @autor rcicero
@@ -35,8 +34,7 @@ public class EbsController {
   //IMPORTANTE: Criar User e liberar a Policy
   //para mais detalhes veja: https://aws.amazon.com/pt/iam/details/
   // Cria um objeto EC2
-  private AmazonEC2 ec2 = new AmazonEC2Client(creds.getCredEc2());
-
+  private AmazonEC2Client ec2 = new AmazonEC2Client(creds.getCredEc2());
 
   /**
    * Cria Volume EBS
@@ -46,6 +44,7 @@ public class EbsController {
   @RequestMapping(method = RequestMethod.POST)
   public @ResponseBody ResponseEntity<String> createEbs() {
     try{
+      
     CreateVolumeRequest volume = new CreateVolumeRequest();
 
     volume.setSize(1);
@@ -71,7 +70,6 @@ public class EbsController {
    */
   @RequestMapping(value = "/{idVolume}", method = RequestMethod.DELETE)
   public @ResponseBody ResponseEntity<String> deleteEbs(@PathVariable String idVolume) {
-
     try {
 
       // modelo para excluir o ebs
