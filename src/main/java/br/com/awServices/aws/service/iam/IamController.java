@@ -1,7 +1,12 @@
 package br.com.awServices.aws.service.iam;
 
 /**
- * Created by rcicero on 13/04/16.
+ * Controller for IAM Service
+ *
+ * @author rcicero
  */
 public class IamController {
+
+//TODO
+
 }

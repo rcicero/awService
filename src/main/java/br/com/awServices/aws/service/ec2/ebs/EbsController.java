@@ -1,5 +1,6 @@
 package br.com.awServices.aws.service.ec2.ebs;
 
+import com.amazonaws.auth.BasicAWSCredentials;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,24 +18,20 @@ import com.amazonaws.services.ec2.model.DeleteSnapshotRequest;
 import com.amazonaws.services.ec2.model.DeleteVolumeRequest;
 import com.amazonaws.services.ec2.model.VolumeType;
 
-import br.com.awServices.auth.credentials.Credentials;
+import br.com.awServices.aws.auth.Credentials;
 
 /**
  * @autor rcicero
  * 
- * EBS controller
+ *        EBS controller
  * 
  */
 @RestController
 @RequestMapping("aws/ebs")
 public class EbsController {
 
-  private Credentials creds = new Credentials();
-  
-  //IMPORTANTE: Criar User e liberar a Policy
-  //para mais detalhes veja: https://aws.amazon.com/pt/iam/details/
-  // Cria um objeto EC2
-  private AmazonEC2Client ec2 = new AmazonEC2Client(creds.getCredEc2());
+  private AmazonEC2Client ec2 =
+      new AmazonEC2Client(new BasicAWSCredentials(Credentials.EC2.getAccessKey(), Credentials.EC2.getSecretKey()));
 
   /**
    * Cria Volume EBS
@@ -43,19 +40,19 @@ public class EbsController {
    */
   @RequestMapping(method = RequestMethod.POST)
   public @ResponseBody ResponseEntity<String> createEbs() {
-    try{
-      
-    CreateVolumeRequest volume = new CreateVolumeRequest();
+    try {
 
-    volume.setSize(1);
-    volume.setAvailabilityZone("us-east-1a");
-    volume.setVolumeType(VolumeType.Gp2);
-    volume.setEncrypted(true);
+      CreateVolumeRequest volume = new CreateVolumeRequest();
 
-    CreateVolumeResult volumeResult = ec2.createVolume(volume);
+      volume.setSize(1);
+      volume.setAvailabilityZone("us-east-1a");
+      volume.setVolumeType(VolumeType.Gp2);
+      volume.setEncrypted(true);
 
-    return new ResponseEntity<String>(volumeResult.toString(), HttpStatus.CREATED);
-    }catch(Exception ex){
+      CreateVolumeResult volumeResult = ec2.createVolume(volume);
+
+      return new ResponseEntity<String>(volumeResult.toString(), HttpStatus.CREATED);
+    } catch (Exception ex) {
       return new ResponseEntity<String>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
@@ -97,28 +94,27 @@ public class EbsController {
   public @ResponseBody ResponseEntity<String> createSnapshot(@PathVariable String idVolume) {
 
     try {
-
+      //TODO modelo json de entrada
       // modelo para criar o snapshot
       CreateSnapshotRequest snapshot = new CreateSnapshotRequest();
       snapshot.setVolumeId(idVolume);
-      snapshot.setDescription("Snapshot from: "+idVolume);
-      
+      snapshot.setDescription("Snapshot from: " + idVolume);
+
       // cria o snapshot
       CreateSnapshotResult snapResult = this.ec2.createSnapshot(snapshot);
 
       return new ResponseEntity<String>(snapResult.toString(), HttpStatus.OK);
-      
+
     } catch (Exception ex) {
       return new ResponseEntity<String>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
   }
-  
+
   /**
    * 
    * Delete Snapshot
-   * 
-   * @param idVolume
+   *
    * @return ResponseEntity
    */
   @RequestMapping(value = "/snapshot/{idSnapshot}", method = RequestMethod.DELETE)
@@ -129,23 +125,22 @@ public class EbsController {
       // modelo para deletar o snapshot
       DeleteSnapshotRequest snapshot = new DeleteSnapshotRequest();
       snapshot.setSnapshotId(idSnapshot);
-      
+
       // deleta o snapshot
       this.ec2.deleteSnapshot(snapshot);
 
       return new ResponseEntity<String>(HttpStatus.OK);
-      
+
     } catch (Exception ex) {
       return new ResponseEntity<String>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
   }
-  
+
   /**
    * 
    * Create Volume from Snapshot
-   * 
-   * @param idVolume
+   *
    * @return ResponseEntity
    */
   @RequestMapping(value = "/snapshot/{idSnapshot}", method = RequestMethod.POST)
@@ -161,7 +156,7 @@ public class EbsController {
       CreateVolumeResult volume = this.ec2.createVolume(ebs);
 
       return new ResponseEntity<String>(volume.toString(), HttpStatus.OK);
-      
+
     } catch (Exception ex) {
       return new ResponseEntity<String>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
