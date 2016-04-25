@@ -1,8 +1,5 @@
 package br.com.awServices.aws.auth;
 
-import com.amazonaws.auth.AWSCredentials;
-import com.amazonaws.auth.BasicAWSCredentials;
-
 /**
  * dicionario de credenciais
  *
@@ -16,6 +13,7 @@ public enum Credentials {
 
   EC2("accessKey", "secretKey"),
   RDS("accessKey","secretKey"),
+  ADM("accessKey","secretKey")
 
   ;
 
