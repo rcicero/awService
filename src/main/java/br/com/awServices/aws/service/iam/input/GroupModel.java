@@ -1,7 +1,15 @@
 package br.com.awServices.aws.service.iam.input;
 
+import lombok.Data;
+
 /**
- * Created by rcicero on 25/04/16.
+ * Modelo do grupo
+ *
+ * @author rcicero
  */
+
+@Data
 public class GroupModel {
+
+    private String name;
 }
